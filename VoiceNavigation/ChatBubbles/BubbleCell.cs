@@ -1,103 +1,191 @@
-﻿using System;
-
-using UIKit;
-using CoreGraphics;
-using Foundation;
+﻿// <copyright file="BubbleCell.cs" company="Moravec Labs, LLC">
+//     MIT License
+//
+//     Copyright (c) Moravec Labs, LLC.
+//
+//     Permission is hereby granted, free of charge, to any person obtaining a copy
+//     of this software and associated documentation files (the "Software"), to deal
+//     in the Software without restriction, including without limitation the rights
+//     to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//     copies of the Software, and to permit persons to whom the Software is
+//     furnished to do so, subject to the following conditions:
+//
+//     The above copyright notice and this permission notice shall be included in all
+//     copies or substantial portions of the Software.
+//
+//     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//     FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+//     SOFTWARE.
+// </copyright>
 
 namespace VoiceNavigation
 {
-	public abstract class BubbleCell : UITableViewCell
-	{
-		public UIImageView BubbleImageView { get; private set; }
-		public UILabel MessageLabel { get; private set; }
-		public UIImage BubbleImage { get; set; }
-		public UIImage BubbleHighlightedImage { get; set; }
+    using System;
+    using CoreGraphics;
+    using Foundation;
+    using UIKit;
 
-		ChatMessage msg;
+    /// <summary>
+    /// Bubble Cell as a UI TableViewCell
+    /// </summary>
+    public abstract class BubbleCell : UITableViewCell
+    {
+        /// <summary>
+        /// The message.
+        /// </summary>
+        private ChatMessage msg;
 
-		public ChatMessage Message {
-			get {
-				return msg;
-			}
-			set {
-				msg = value;
-				BubbleImageView.Image = BubbleImage;
-				BubbleImageView.HighlightedImage = BubbleHighlightedImage;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:VoiceNavigation.BubbleCell"/> class.
+        /// </summary>
+        /// <param name="handle">Handle for cell.</param>
+        public BubbleCell(IntPtr handle) : base(handle)
+        {
+            this.Initialize();
+        }
 
-				MessageLabel.Text = msg.Text;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:VoiceNavigation.BubbleCell"/> class.
+        /// </summary>
+        public BubbleCell()
+        {
+            this.Initialize();
+        }
 
-				MessageLabel.UserInteractionEnabled = true;
-				BubbleImageView.UserInteractionEnabled = false;
-			}
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:VoiceNavigation.BubbleCell"/> class.
+        /// </summary>
+        /// <param name="style">Style for the cell.</param>
+        /// <param name="reuseIdentifier">Reuse identifier.</param>
+        [Export("initWithStyle:reuseIdentifier:")]
+        public BubbleCell(UITableViewCellStyle style, string reuseIdentifier) : base(style, reuseIdentifier)
+        {
+            this.Initialize();
+        }
 
-		public BubbleCell (IntPtr handle)
-			: base (handle)
-		{
-			Initialize ();
-		}
+        /// <summary>
+        /// Gets the bubble image view.
+        /// </summary>
+        /// <value>The bubble image view.</value>
+        public UIImageView BubbleImageView { get; private set; }
 
-		public BubbleCell ()
-		{
-			Initialize ();
-		}
+        /// <summary>
+        /// Gets the message label.
+        /// </summary>
+        /// <value>The message label.</value>
+        public UILabel MessageLabel { get; private set; }
 
-		[Export ("initWithStyle:reuseIdentifier:")]
-		public BubbleCell (UITableViewCellStyle style, string reuseIdentifier)
-			: base (style, reuseIdentifier)
-		{
-			Initialize ();
-		}
+        /// <summary>
+        /// Gets or sets the bubble image.
+        /// </summary>
+        /// <value>The bubble image.</value>
+        public UIImage BubbleImage { get; set; }
 
-		void Initialize ()
-		{
-			BubbleImageView = new UIImageView {
-				TranslatesAutoresizingMaskIntoConstraints = false
-			};
-			MessageLabel = new UILabel {
-				TranslatesAutoresizingMaskIntoConstraints = false,
-				Lines = 0,
-				PreferredMaxLayoutWidth = 220f,
-				LineBreakMode = UILineBreakMode.WordWrap,
-				AutoresizingMask = UIViewAutoresizing.FlexibleHeight
-			};
+        /// <summary>
+        /// Gets or sets the bubble highlighted image.
+        /// </summary>
+        /// <value>The bubble highlighted image.</value>
+        public UIImage BubbleHighlightedImage { get; set; }
 
-			ContentView.AddSubviews (BubbleImageView, MessageLabel);
-		}
+        /// <summary>
+        /// Gets or sets the message.
+        /// </summary>
+        /// <value>The message.</value>
+        public ChatMessage Message
+        {
+            get
+            {
+                return this.msg;
+            }
 
-		public override void SetSelected (bool selected, bool animated)
-		{
-			base.SetSelected (selected, animated);
-			BubbleImageView.Highlighted = selected;
-		}
+            set
+            {
+                this.msg = value;
+                this.BubbleImageView.Image = this.BubbleImage;
+                this.BubbleImageView.HighlightedImage = this.BubbleHighlightedImage;
 
-		protected static UIImage CreateColoredImage (UIColor color, UIImage mask)
-		{
-			var rect = new CGRect (CGPoint.Empty, mask.Size);
-			UIGraphics.BeginImageContextWithOptions (mask.Size, false, mask.CurrentScale);
-			CGContext context = UIGraphics.GetCurrentContext ();
-			mask.DrawAsPatternInRect (rect);
-			context.SetFillColor (color.CGColor);
-			context.SetBlendMode (CGBlendMode.SourceAtop);
-			context.FillRect (rect);
-			UIImage result = UIGraphics.GetImageFromCurrentImageContext ();
-			UIGraphics.EndImageContext ();
-			return result;
-		}
+                this.MessageLabel.Text = this.msg.Text;
 
-		protected static UIImage CreateBubbleWithBorder (UIImage bubbleImg, UIColor bubbleColor)
-		{
-			bubbleImg = CreateColoredImage (bubbleColor, bubbleImg);
-			CGSize size = bubbleImg.Size;
+                this.MessageLabel.UserInteractionEnabled = true;
+                this.BubbleImageView.UserInteractionEnabled = false;
+            }
+        }
 
-			UIGraphics.BeginImageContextWithOptions (size, false, 0);
-			var rect = new CGRect (CGPoint.Empty, size);
-			bubbleImg.Draw (rect);
+        /// <summary>
+        /// Sets the selected.
+        /// </summary>
+        /// <param name="selected">If set to <c>true</c> selected.</param>
+        /// <param name="animated">If set to <c>true</c> animated.</param>
+        public override void SetSelected(bool selected, bool animated)
+        {
+            base.SetSelected(selected, animated);
+            this.BubbleImageView.Highlighted = selected;
+        }
 
-			var result = UIGraphics.GetImageFromCurrentImageContext ();
-			UIGraphics.EndImageContext ();
+        /// <summary>
+        /// Creates the colored image.
+        /// </summary>
+        /// <returns>The colored image.</returns>
+        /// <param name="color">new color.</param>
+        /// <param name="mask">image mask.</param>
+        protected static UIImage CreateColoredImage(UIColor color, UIImage mask)
+        {
+            var rect = new CGRect(CGPoint.Empty, mask.Size);
+            UIGraphics.BeginImageContextWithOptions(mask.Size, false, mask.CurrentScale);
+            CGContext context = UIGraphics.GetCurrentContext();
+            mask.DrawAsPatternInRect(rect);
+            context.SetFillColor(color.CGColor);
+            context.SetBlendMode(CGBlendMode.SourceAtop);
+            context.FillRect(rect);
+            UIImage result = UIGraphics.GetImageFromCurrentImageContext();
+            UIGraphics.EndImageContext();
+            return result;
+        }
 
-			return result;
-		}
-	}
+        /// <summary>
+        /// Creates the bubble with border.
+        /// </summary>
+        /// <returns>The bubble with border.</returns>
+        /// <param name="bubbleImg">Bubble image.</param>
+        /// <param name="bubbleColor">Bubble color.</param>
+        protected static UIImage CreateBubbleWithBorder(UIImage bubbleImg, UIColor bubbleColor)
+        {
+            bubbleImg = CreateColoredImage(bubbleColor, bubbleImg);
+            CGSize size = bubbleImg.Size;
+
+            UIGraphics.BeginImageContextWithOptions(size, false, 0);
+            var rect = new CGRect(CGPoint.Empty, size);
+            bubbleImg.Draw(rect);
+
+            var result = UIGraphics.GetImageFromCurrentImageContext();
+            UIGraphics.EndImageContext();
+
+            return result;
+        }
+
+        /// <summary>
+        /// Initialize this instance.
+        /// </summary>
+        private void Initialize()
+        {
+            this.BubbleImageView = new UIImageView
+            {
+                TranslatesAutoresizingMaskIntoConstraints = false
+            };
+            this.MessageLabel = new UILabel
+            {
+                TranslatesAutoresizingMaskIntoConstraints = false,
+                Lines = 0,
+                PreferredMaxLayoutWidth = 220f,
+                LineBreakMode = UILineBreakMode.WordWrap,
+                AutoresizingMask = UIViewAutoresizing.FlexibleHeight
+            };
+
+            this.ContentView.AddSubviews(this.BubbleImageView, this.MessageLabel);
+        }
+    }
 }

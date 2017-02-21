@@ -1,4 +1,4 @@
-﻿// <copyright file="Utilities.cs" company="Moravec Labs, LLC">
+﻿// <copyright file="UITextFieldBinding.cs" company="Moravec Labs, LLC">
 //     MIT License
 //
 //     Copyright (c) Moravec Labs, LLC.
@@ -22,47 +22,26 @@
 //     SOFTWARE.
 // </copyright>
 
-namespace MoravecLabs
+namespace MoravecLabs.UI.Binding
 {
     using System;
+    using Infrastructure;
+    using UIKit;
 
     /// <summary>
-    /// Contains utility methods.
+    /// Binding for a UITextField, changes to the specified viewModel are pushed to the UITextfield automatically.
     /// </summary>
-    public static class Utilities
+    public class UITextFieldBinding : BaseBinding
     {
         /// <summary>
-        /// Converts a number to a string that means the order, 1 => first, 2 => seconds, etc.
+        /// Initializes a new instance of the <see cref="T:MoravecLabs.UI.Binding.UITextFieldBinding"/> class.
         /// </summary>
-        /// <returns>A string representation of the number.</returns>
-        /// <param name="number">The number to convert.</param>
-        public static int StringNumberToInteger(string number)
+        /// <param name="viewModel">View model.</param>
+        /// <param name="propertyName">Property name.</param>
+        /// <param name="textField">Text field.</param>
+        public UITextFieldBinding(BaseViewModel viewModel, string propertyName, UITextField textField)
         {
-            try
-            {
-                return Convert.ToInt32(number);
-            }
-            catch
-            {
-            }
-
-            switch (number)
-            {
-                case "first":
-                    return 1;
-                case "second":
-                    return 2;
-                case "third":
-                    return 3;
-                case "one":
-                    return 1;
-                case "two":
-                    return 2;
-                case "three":
-                    return 3;
-                default:
-                    throw new InvalidCastException("Unable to convert string to number");
-            }
+            viewModel.SubscribePropertyChanged(propertyName, () => { textField.Text = Convert.ToString(viewModel.GetPropertyByName(propertyName)); });
         }
     }
 }

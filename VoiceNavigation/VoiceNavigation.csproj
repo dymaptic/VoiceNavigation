@@ -134,7 +134,7 @@
     <Compile Include="ChatBubbles\BubbleCell.cs" />
     <Compile Include="ChatBubbles\IncomingCell.cs" />
     <Compile Include="ChatBubbles\OutgoingCell.cs" />
-    <Compile Include="ChatBubbles\ChatModels.cs" />
+    <Compile Include="ChatBubbles\ChatMessage.cs" />
     <Compile Include="ViewControllers\ChatViewController.cs" />
     <Compile Include="ViewControllers\ChatViewController.designer.cs">
       <DependentUpon>ChatViewController.cs</DependentUpon>

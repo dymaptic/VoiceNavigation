@@ -1,4 +1,4 @@
-﻿// <copyright file="Utilities.cs" company="Moravec Labs, LLC">
+﻿// <copyright file="ChatMessage.cs" company="Moravec Labs, LLC">
 //     MIT License
 //
 //     Copyright (c) Moravec Labs, LLC.
@@ -22,47 +22,41 @@
 //     SOFTWARE.
 // </copyright>
 
-namespace MoravecLabs
+namespace VoiceNavigation
 {
     using System;
 
     /// <summary>
-    /// Contains utility methods.
+    /// Chat message type.
     /// </summary>
-    public static class Utilities
+    public enum ChatMessageType
     {
         /// <summary>
-        /// Converts a number to a string that means the order, 1 => first, 2 => seconds, etc.
+        /// A message that is incomming, or from the computer in this case.
         /// </summary>
-        /// <returns>A string representation of the number.</returns>
-        /// <param name="number">The number to convert.</param>
-        public static int StringNumberToInteger(string number)
-        {
-            try
-            {
-                return Convert.ToInt32(number);
-            }
-            catch
-            {
-            }
+        Incoming,
 
-            switch (number)
-            {
-                case "first":
-                    return 1;
-                case "second":
-                    return 2;
-                case "third":
-                    return 3;
-                case "one":
-                    return 1;
-                case "two":
-                    return 2;
-                case "three":
-                    return 3;
-                default:
-                    throw new InvalidCastException("Unable to convert string to number");
-            }
-        }
+        /// <summary>
+        /// A message that is outgoing, or from the person in this case.
+        /// </summary>
+        Outgoing,
+    }
+
+    /// <summary>
+    /// Chat message.
+    /// </summary>
+    public class ChatMessage
+    {
+        /// <summary>
+        /// Gets or sets the type.
+        /// </summary>
+        /// <value>The type.</value>
+        public ChatMessageType Type { get; set; }
+
+        /// <summary>
+        /// Gets or sets the text.
+        /// </summary>
+        /// <value>The text.</value>
+        public string Text { get; set; }
     }
 }

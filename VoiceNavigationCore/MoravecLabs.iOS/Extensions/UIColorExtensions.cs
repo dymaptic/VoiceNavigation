@@ -1,4 +1,4 @@
-﻿// <copyright file="Utilities.cs" company="Moravec Labs, LLC">
+﻿// <copyright file="UICOlorExtensions.cs" company="Moravec Labs, LLC">
 //     MIT License
 //
 //     Copyright (c) Moravec Labs, LLC.
@@ -22,47 +22,28 @@
 //     SOFTWARE.
 // </copyright>
 
-namespace MoravecLabs
+namespace MoravecLabs.Extensions
 {
     using System;
+    using UIKit;
 
     /// <summary>
-    /// Contains utility methods.
+    /// Extensions to UIColor
     /// </summary>
-    public static class Utilities
+    public static class UIColorExtensions
     {
         /// <summary>
-        /// Converts a number to a string that means the order, 1 => first, 2 => seconds, etc.
+        /// UIColor from Hex (as int).  Originally from: http://stackoverflow.com/questions/10310917/uicolor-from-hex-in-monotouch
         /// </summary>
-        /// <returns>A string representation of the number.</returns>
-        /// <param name="number">The number to convert.</param>
-        public static int StringNumberToInteger(string number)
+        /// <returns>a UIColor for the given hex code</returns>
+        /// <param name="color">The UIColor (this) for the extension.</param>
+        /// <param name="hexValue">The hex value.</param>
+        public static UIColor FromHex(this UIColor color, int hexValue)
         {
-            try
-            {
-                return Convert.ToInt32(number);
-            }
-            catch
-            {
-            }
-
-            switch (number)
-            {
-                case "first":
-                    return 1;
-                case "second":
-                    return 2;
-                case "third":
-                    return 3;
-                case "one":
-                    return 1;
-                case "two":
-                    return 2;
-                case "three":
-                    return 3;
-                default:
-                    throw new InvalidCastException("Unable to convert string to number");
-            }
+            return UIColor.FromRGB(
+                ((float)((hexValue & 0xFF0000) >> 16)) / 255.0f,
+                ((float)((hexValue & 0xFF00) >> 8)) / 255.0f,
+                ((float)(hexValue & 0xFF)) / 255.0f);
         }
     }
 }
