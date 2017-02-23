@@ -91,8 +91,6 @@ namespace VoiceNavigation
         /// </summary>
         public override void ViewDidLoad()
         {
-            this.ViewModel = new ViewModels.ChatViewModel();
-
             // Connect Data source to TableView
             this.ChatTableView.DataSource = new BindableUITableViewDataSource<ChatMessage>(
                 this.ChatTableView, 

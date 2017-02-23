@@ -58,6 +58,15 @@ namespace MoravecLabs.Atom
         /// <summary>
         /// Initializes a new instance of the <see cref="T:MoravecLabs.Atom.Atom`1"/> class.
         /// </summary>
+        public Atom()
+        {
+            this.internalValue = default(T);
+            this.onChangeActions = new List<Action<T, T>>();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:MoravecLabs.Atom.Atom`1"/> class.
+        /// </summary>
         /// <param name="value">The initial value</param>
         public Atom(T value)
         {

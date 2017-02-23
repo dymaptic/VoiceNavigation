@@ -18,11 +18,20 @@ namespace VoiceNavigation
         [GeneratedCode ("iOS Designer", "1.0")]
         Esri.ArcGISRuntime.UI.Controls.MapView MyMapView { get; set; }
 
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        MaterialControls.MDButton SpeakButton { get; set; }
+
         void ReleaseDesignerOutlets ()
         {
             if (MyMapView != null) {
                 MyMapView.Dispose ();
                 MyMapView = null;
+            }
+
+            if (SpeakButton != null) {
+                SpeakButton.Dispose ();
+                SpeakButton = null;
             }
         }
     }

@@ -63,18 +63,47 @@ namespace VoiceNavigation
             this.ChatViewModel = new ViewModels.ChatViewModel();
             this.ViewModel = new ViewModels.PrimaryMapViewModel();
 
+            // Setup the SpeakButton
+            this.SpeakButton.Type = 2;
+
             // Tie events between the two view models together.
             this.ChatViewModel.Destination.SubscribePropertyChanged((oldVal, newVal) =>
             {
                 this.ViewModel.ComputeDirections(newVal);
             });
 
-            // Perform any additional setup after loading the view, typically from a nib.
-            this.MyMapView.Map = new Esri.ArcGISRuntime.Mapping.Map(
-                Esri.ArcGISRuntime.Mapping.BasemapType.DarkGrayCanvasVector, 
-                0, 
-                0, 
-                100);
+            this.ViewModel.Map.SubscribePropertyChanged((oldVal, newVal) =>
+            {
+                // Set the map, as the property changed on the view model.
+                this.MyMapView.Map = newVal;
+
+                // Turn on location
+                this.MyMapView.LocationDisplay.AutoPanMode = Esri.ArcGISRuntime.UI.LocationDisplayAutoPanMode.Recenter;
+                this.MyMapView.LocationDisplay.IsEnabled = true;
+            });
+
+            this.ViewModel.Initialize();
+            this.ChatViewModel.Initialize();
+        }
+
+        /// <summary>
+        /// Views the will appear.
+        /// </summary>
+        /// <param name="animated">If set to <c>true</c> animated.</param>
+        public override void ViewWillAppear(bool animated)
+        {
+            base.ViewWillAppear(animated);
+            this.NavigationController.SetNavigationBarHidden(true, animated);
+        }
+
+        /// <summary>
+        /// Views the will disappear.
+        /// </summary>
+        /// <param name="animated">If set to <c>true</c> animated.</param>
+        public override void ViewWillDisappear(bool animated)
+        {
+            base.ViewWillDisappear(animated);
+            this.NavigationController.SetNavigationBarHidden(false, animated);
         }
 
         /// <summary>

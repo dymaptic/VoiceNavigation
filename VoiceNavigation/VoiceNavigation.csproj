@@ -98,6 +98,9 @@
     <Reference Include="Esri.ArcGISRuntime">
       <HintPath>..\packages\Esri.ArcGISRuntime.Xamarin.iOS.100.0.0\lib\Xamarin.iOS10\Esri.ArcGISRuntime.dll</HintPath>
     </Reference>
+    <Reference Include="MaterialControls">
+      <HintPath>..\packages\MaterialControls.1.2.2\lib\Xamarin.iOS10\MaterialControls.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
@@ -110,6 +113,10 @@
     <ImageAsset Include="Assets.xcassets\ChatBubbleOutgoing.imageset\bubble_regular.png" />
     <ImageAsset Include="Assets.xcassets\ChatBubbleOutgoing.imageset\bubble_regular%402x.png" />
     <ImageAsset Include="Assets.xcassets\ChatBubbleOutgoing.imageset\bubble_regular%403x.png" />
+    <ImageAsset Include="Assets.xcassets\Mic.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\Mic.imageset\ic_mic_white_48pt.png" />
+    <ImageAsset Include="Assets.xcassets\Mic.imageset\ic_mic_white_48pt_2x.png" />
+    <ImageAsset Include="Assets.xcassets\Mic.imageset\ic_mic_white_48pt_3x.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
@@ -118,6 +125,8 @@
     <Folder Include="Assets.xcassets\ChatBubbleIncoming.imageset\" />
     <Folder Include="ViewControllers\" />
     <Folder Include="ViewModels\" />
+    <Folder Include="Assets.xcassets\Mic.imageset\" />
+    <Folder Include="Context\" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
@@ -145,6 +154,10 @@
       <DependentUpon>PrimaryMapViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\PrimaryMapViewModel.cs" />
+    <Compile Include="MapUtils.cs" />
+    <Compile Include="Context\Context.cs" />
+    <Compile Include="Context\Subject.cs" />
+    <Compile Include="ContextFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VoiceNavigationCore\VoiceNavigationCore.csproj">
