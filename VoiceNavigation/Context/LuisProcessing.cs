@@ -41,8 +41,8 @@ namespace VoiceNavigation.Context
         {
             try
             {
-                var client = new LuisClient("fda94187-6a76-4a69-bc18-efa17f7e1a52", 
-                                            "1e9b1ceb8bc844ce8eec97e41b67319b", 
+                var client = new LuisClient("app-id", 
+                                            "key", 
                                             true, 
                                             "westus");
                 var result = await client.Predict(text);
