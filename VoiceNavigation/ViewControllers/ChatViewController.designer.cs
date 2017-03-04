@@ -22,6 +22,10 @@ namespace VoiceNavigation
         [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UITextField MessageTextField { get; set; }
 
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        MaterialControls.MDButton SpeakButton { get; set; }
+
         void ReleaseDesignerOutlets ()
         {
             if (ChatTableView != null) {
@@ -32,6 +36,11 @@ namespace VoiceNavigation
             if (MessageTextField != null) {
                 MessageTextField.Dispose ();
                 MessageTextField = null;
+            }
+
+            if (SpeakButton != null) {
+                SpeakButton.Dispose ();
+                SpeakButton = null;
             }
         }
     }

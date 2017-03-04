@@ -28,6 +28,8 @@ namespace VoiceNavigation.ViewModels
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
+    using System.Threading.Tasks;
+    using Esri.ArcGISRuntime.Geometry;
     using Esri.ArcGISRuntime.Tasks.Geocoding;
     using MoravecLabs.Atom;
     using MoravecLabs.Infrastructure;
@@ -65,23 +67,50 @@ namespace VoiceNavigation.ViewModels
         public Atom<GeocodeResult> Destination { get; set; }
 
         /// <summary>
+        /// Gets or sets the current location.
+        /// </summary>
+        /// <value>The current location.</value>
+        public Atom<MapPoint> CurrentLocation { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:VoiceNavigation.ViewModels.ChatViewModel"/> class.
         /// </summary>
         public ChatViewModel()
         {
-            // this.Context = new Atom<Context.Context>(ContextUtils.GetRepeater());
-            // this.Context = new Atom<Context.Context>(ContextUtils.GetSimpleInterview());
-            // this.Context = new Atom<Context.Context>(ContextUtils.GetDirectionsContext());
+            // this.Context = new Atom<Context.Context>(ContextFactory.GetRepeater());
+            // this.Context = new Atom<Context.Context>(ContextFactory.GetSimpleInterview());
+            this.Context = new Atom<Context.Context>(ContextFactory.GetDirectionsContext(this.DestinationSet));
             this.ChatData = new ObservableCollection<ChatMessage>();
-            this.Destination = new Atom<GeocodeResult>(null, this, nameof(Destination));
+            this.Destination = new Atom<GeocodeResult>(null, this, nameof(this.Destination));
+            this.CurrentLocation = new Atom<MapPoint>(default(MapPoint), this, nameof(this.CurrentLocation));
+            this.CurrentLocation.SubscribePropertyChanged((oldValue, newValue) => 
+            {
+                var s = this.Context.Value.GetSubjectByName("CurrentLocation");
+                s.SetValue(newValue); 
+            });
+        }
+
+        /// <summary>
+        /// Destination was set on the context
+        /// </summary>
+        /// <returns>The set.</returns>
+        /// <param name="context">Context.</param>
+        public List<string> DestinationSet(Context.Context context)
+        {
+            this.Destination.Value = context.GetSubjectByName("FinalDestination").GetValue() as GeocodeResult;
+            return new List<string>();
         }
 
         /// <summary>
         /// Initialize this instance.
         /// </summary>
-        public void Initialize()
+        public async Task InitializeAsync()
         {
-            this.Context.Value.Evalulate(null).ForEach(m => this.AddMessage(m, ChatMessageType.Incoming));
+            var result = await this.Context.Value.Evalulate("");
+            foreach (var m in result)
+            {
+                await this.AddMessage(m, ChatMessageType.Incoming);
+            }
         }
 
         /// <summary>
@@ -89,7 +118,7 @@ namespace VoiceNavigation.ViewModels
         /// </summary>
         /// <param name="message">Message.</param>
         /// <param name="messageType">Message type.</param>
-        public void AddMessage(string message, ChatMessageType messageType = ChatMessageType.Outgoing)
+        public async Task AddMessage(string message, ChatMessageType messageType = ChatMessageType.Outgoing)
         {
             if (string.IsNullOrEmpty(message))
             {
@@ -99,7 +128,11 @@ namespace VoiceNavigation.ViewModels
             //If the user created the message, figure out what they mean...
             if (messageType == ChatMessageType.Outgoing)
             {
-                this.Context.Value.Evalulate(message).ForEach(m => this.AddMessage(m, ChatMessageType.Incoming));
+                var result = await this.Context.Value.Evalulate(message);
+                foreach (var m in result)
+                {
+                    await this.AddMessage(m, ChatMessageType.Incoming);
+                }
             }
 
 

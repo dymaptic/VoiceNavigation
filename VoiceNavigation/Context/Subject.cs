@@ -26,6 +26,7 @@ namespace VoiceNavigation.Context
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using MoravecLabs.Atom;
 
     /// <summary>
@@ -55,19 +56,31 @@ namespace VoiceNavigation.Context
         /// Gets or sets the next action.
         /// </summary>
         /// <value>The next action.</value>
-        public Func<Subject, string, List<string>> NextAction {get; set;}
+        public Func<Subject, string, List<string>> NextAction { get; set; }
+
+        /// <summary>
+        /// Gets or sets the next action async.
+        /// </summary>
+        /// <value>The next action async.</value>
+        public Func<Subject, string, Task<List<string>>> NextActionAsync { get; set; }
 
         /// <summary>
         /// Next the specified result.
         /// </summary>
         /// <param name="result">Result.</param>
-        public abstract List<string> Next(string result);
+        public abstract Task<List<string>> Next(string result);
 
         /// <summary>
         /// Sets the value.
         /// </summary>
         /// <param name="value">Value.</param>
-        public abstract void SetValue(object value);
+        public abstract void SetValue(object value, bool isReady=true);
+
+        /// <summary>
+        /// Gets the value.
+        /// </summary>
+        /// <returns>The value.</returns>
+        public abstract object GetValue();
 
 
     }
@@ -94,17 +107,27 @@ namespace VoiceNavigation.Context
             this.Context = new Atom<Context>(default(Context));
         }
 
-        public override void SetValue(object value)
+        public override void SetValue(object value, bool isReady=true)
         {
             this.Value.Value = (T)value;
-            this.IsReady.Value = true;
+            this.IsReady.Value = isReady;
         }
 
-        public override List<string> Next(string result)
+        public override object GetValue()
+        {
+            return this.Value.Value;
+        }
+
+        public override async Task<List<string>> Next(string result)
         {
             if (this.NextAction != null)
             {
                 return this.NextAction(this, result);
+            }
+            else if (this.NextActionAsync != null)
+            {
+                var data = await this.NextActionAsync(this, result);
+                return data;
             }
 
             var r = new List<string>();

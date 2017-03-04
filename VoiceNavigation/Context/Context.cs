@@ -29,6 +29,7 @@ namespace VoiceNavigation.Context
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
+    using System.Threading.Tasks;
     using MoravecLabs.Atom;
 
     /// <summary>
@@ -84,7 +85,7 @@ namespace VoiceNavigation.Context
         /// <param name="name">Name to search for.</param>
         public Subject GetSubjectByName(string name)
         {
-            return this.Subjects.FirstOrDefault(i => i.Name.Equals(name));
+            return this.Subjects.FirstOrDefault(i => i.Name.Value.Equals(name));
         }
 
         /// <summary>
@@ -102,7 +103,7 @@ namespace VoiceNavigation.Context
         /// displayed to the user as output from the bot.
         /// </summary>
         /// <param name="query">Query.</param>
-        public List<string> Evalulate(string query)
+        public async Task<List<string>> Evalulate(string query)
         {
             var queryConsumed = false;
             foreach (var s in this.Subjects)
@@ -113,11 +114,11 @@ namespace VoiceNavigation.Context
 
                     if (!queryConsumed)
                     {
-                        retValue = s.Next(query);
+                        retValue = await s.Next(query);
                     }
                     else 
                     {
-                        retValue = s.Next(null);
+                        retValue = await s.Next(null);
                     }
 
                     // If the return value is either null or an empty list, and the subject is ready, skip to the next one.

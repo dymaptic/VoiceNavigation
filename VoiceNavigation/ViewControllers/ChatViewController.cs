@@ -28,16 +28,27 @@ namespace VoiceNavigation
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Threading.Tasks;
+    using AVFoundation;
+    using Esri.ArcGISRuntime.Geometry;
+    using System.Linq;
     using Foundation;
     using MoravecLabs.UI;
 
     using UIKit;
+    using Speech;
 
     /// <summary>
     /// Chat view controller.
     /// </summary>
-    public partial class ChatViewController : UITableViewController
+    public partial class ChatViewController : UIViewController
     {
+        #region Private Variables for Speech
+        private AVAudioEngine AudioEngine = new AVAudioEngine();
+        private SFSpeechRecognizer SpeechRecognizer = new SFSpeechRecognizer();
+        private SFSpeechAudioBufferRecognitionRequest LiveSpeechRequest = new SFSpeechAudioBufferRecognitionRequest();
+        private SFSpeechRecognitionTask RecognitionTask;
+        #endregion
+
         /// <summary>
         /// The chat bubble incoming.
         /// </summary>
@@ -47,6 +58,35 @@ namespace VoiceNavigation
         /// The chat bubble outgoing.
         /// </summary>
         private static readonly string ChatBubbleOutgoingIdentifier = "CHAT_BUBBLE_OUTGOING";
+
+        /// <summary>
+        /// The speech syntesizer.
+        /// </summary>
+        private AVSpeechSynthesizer SpeechSyntesizer;
+
+        /// <summary>
+        /// Chat view table delegate.
+        /// </summary>
+        private class ChatViewTableDelegate: UITableViewDelegate
+        {
+            /// <summary>
+            /// Gets or sets the view model.
+            /// </summary>
+            /// <value>The view model.</value>
+            public ViewModels.ChatViewModel ViewModel { get; set; }
+
+            /// <summary>
+            /// Gets the height for row.
+            /// </summary>
+            /// <returns>The height for row.</returns>
+            /// <param name="tableView">Table view.</param>
+            /// <param name="indexPath">Index path.</param>
+            public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath)
+            {
+                var data = this.ViewModel.ChatData[indexPath.Row];
+                return Math.Max(data.Text.Length, 26) / 25f * 40f;
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:VoiceNavigation.ChatViewController"/> class.
@@ -72,18 +112,29 @@ namespace VoiceNavigation
             base.ViewWillAppear(animated);
             this.ChatTableView.RowHeight = UITableView.AutomaticDimension;
             this.ChatTableView.EstimatedRowHeight = 40f;
-        }
+            var del = new ChatViewTableDelegate();
+            del.ViewModel = this.ViewModel;
+            this.ChatTableView.Delegate = del;
+            this.SpeakButton.TouchUpInside += (sender, e) =>
+            {
+                if (this.SpeechSyntesizer.Speaking)
+                {
+                    this.SpeechSyntesizer.StopSpeaking(AVSpeechBoundary.Immediate);
+                }
 
-        /// <summary>
-        /// Gets the height for row.
-        /// </summary>
-        /// <returns>The height for row.</returns>
-        /// <param name="tableView">Table view.</param>
-        /// <param name="indexPath">Index path.</param>
-        public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath)
-        {
-            var data = this.ViewModel.ChatData[indexPath.Row];
-            return Math.Max(data.Text.Length, 26) / 25f * 40f;
+                //if (this.RecognitionTask == null)
+                //{
+                //    StartRecording();
+                //}
+                //else if (this.RecognitionTask.State == SFSpeechRecognitionTaskState.Running)
+                //{
+                //    StopRecording();
+                //}
+                //else 
+                //{
+                //    StartRecording();
+                //}
+            };
         }
 
         /// <summary>
@@ -91,29 +142,31 @@ namespace VoiceNavigation
         /// </summary>
         public override void ViewDidLoad()
         {
+            // Configure the button
+            this.SpeakButton.Type = 2;
             // Connect Data source to TableView
             this.ChatTableView.DataSource = new BindableUITableViewDataSource<ChatMessage>(
-                this.ChatTableView, 
-                this.ViewModel.ChatData, 
-                (tableView, indexPath, dataSource) => 
-            {
-                var message = dataSource[indexPath.Row];
-                BubbleCell cell = null;
-                if (message.Type == ChatMessageType.Incoming)
+                this.ChatTableView,
+                this.ViewModel.ChatData,
+                (tableView, indexPath, dataSource) =>
                 {
-                    cell = (BubbleCell)tableView.DequeueReusableCell(ChatBubbleIncomingIdentifier);
-                }
-                else // outgoing
-                {
-                    cell = (BubbleCell)tableView.DequeueReusableCell(ChatBubbleOutgoingIdentifier);
-                }
+                    var message = dataSource[indexPath.Row];
+                    BubbleCell cell = null;
+                    if (message.Type == ChatMessageType.Incoming)
+                    {
+                        cell = (BubbleCell)tableView.DequeueReusableCell(ChatBubbleIncomingIdentifier);
+                    }
+                    else // outgoing
+                    {
+                        cell = (BubbleCell)tableView.DequeueReusableCell(ChatBubbleOutgoingIdentifier);
+                    }
 
-                cell.Message = message;
-                return cell;
-            });
+                    cell.Message = message;
+                    return cell;
+                });
 
             // Force the keyboard to go away.
-            this.MessageTextField.ShouldReturn += (txtField) => 
+            this.MessageTextField.ShouldReturn += (txtField) =>
             {
                 txtField.ResignFirstResponder();
                 this.ViewModel.AddMessage(txtField.Text);
@@ -129,6 +182,93 @@ namespace VoiceNavigation
                     this.NavigationController.PopViewController(true);
                 });
             });
+
+            //Configure the Speech Synthesizer
+            this.SpeechSyntesizer = new AVSpeechSynthesizer();
+            this.ViewModel.ChatData.CollectionChanged += (sender, e) =>
+            {
+                // if there are new items, and they are outgoing, the user said something, so stop speaking if we are.
+                if (e.NewItems.Count > 0)
+                {
+                    if (e.NewItems.OfType<object>().Cast<ChatMessage>().Count(i => i.Type == ChatMessageType.Outgoing) > 0)
+                    {
+                        if (this.SpeechSyntesizer.Speaking)
+                        {
+                            this.SpeechSyntesizer.StopSpeaking(AVSpeechBoundary.Word);
+                        }
+                    }
+                }
+                foreach (var item in e.NewItems)
+                {
+                    var chat = item as ChatMessage;
+                    if (chat != null & chat.Type == ChatMessageType.Incoming)
+                    {
+
+                        var speechUtterance = new AVSpeechUtterance(chat.Text)
+                        {
+                            Rate = AVSpeechUtterance.MaximumSpeechRate / 1.5f,
+                            Voice = AVSpeechSynthesisVoice.FromLanguage("en-US"),
+                            Volume = 0.5f,
+                            PitchMultiplier = 1.0f
+                        };
+                        this.SpeechSyntesizer.SpeakUtterance(speechUtterance);
+                    }
+                }
+
+            };
+        }
+
+        private void StartRecording()
+        {
+            // Setup audio session
+            var node = AudioEngine.InputNode;
+            var recordingFormat = node.GetBusOutputFormat(0);
+            node.InstallTapOnBus(0, 1024, recordingFormat, (AVAudioPcmBuffer buffer, AVAudioTime when) =>
+            {
+                // Append buffer to recognition request
+                LiveSpeechRequest.Append(buffer);
+            });
+
+            // Start recording
+            AudioEngine.Prepare();
+            NSError error;
+            AudioEngine.StartAndReturnError(out error);
+
+            // Did recording start?
+            if (error != null)
+            {
+                return;
+            }
+
+            // Start recognition
+            RecognitionTask = SpeechRecognizer.GetRecognitionTask(LiveSpeechRequest, async (SFSpeechRecognitionResult result, NSError err) =>
+            {
+                // Was there an error?
+                if (err != null)
+                {
+                    await this.ViewModel.AddMessage("Sorry, Voice Control is currently disabled", ChatMessageType.Incoming);
+                }
+                else 
+                {
+                    // Is this the final translation?
+                    if (result.Final)
+                    {
+                        Console.WriteLine("You said \"{0}\".", result.BestTranscription.FormattedString);
+                    }
+                }
+            });
+        }
+
+        public void StopRecording()
+        {
+            AudioEngine.Stop();
+            LiveSpeechRequest.EndAudio();
+        }
+
+        public void CancelRecording()
+        {
+            AudioEngine.Stop();
+            RecognitionTask.Cancel();
         }
     }
 }

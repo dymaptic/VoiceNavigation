@@ -92,14 +92,14 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Cognitive.LUIS">
-      <HintPath>..\packages\Microsoft.Cognitive.LUIS.1.0.0\lib\portable45-net45+win8+wpa81\Microsoft.Cognitive.LUIS.dll</HintPath>
-    </Reference>
     <Reference Include="Esri.ArcGISRuntime">
       <HintPath>..\packages\Esri.ArcGISRuntime.Xamarin.iOS.100.0.0\lib\Xamarin.iOS10\Esri.ArcGISRuntime.dll</HintPath>
     </Reference>
     <Reference Include="MaterialControls">
       <HintPath>..\packages\MaterialControls.1.2.2\lib\Xamarin.iOS10\MaterialControls.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Cognitive.LUIS">
+      <HintPath>..\packages\Microsoft.Cognitive.LUIS.2.0.0\lib\portable45-net45+win8+wpa81\Microsoft.Cognitive.LUIS.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -158,6 +158,7 @@
     <Compile Include="Context\Context.cs" />
     <Compile Include="Context\Subject.cs" />
     <Compile Include="ContextFactory.cs" />
+    <Compile Include="Context\LuisProcessing.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VoiceNavigationCore\VoiceNavigationCore.csproj">

@@ -37,5 +37,7 @@
 	<string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Show your location</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Allows voice commands</string>
 </dict>
 </plist>

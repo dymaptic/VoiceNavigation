@@ -80,10 +80,16 @@ namespace VoiceNavigation
                 // Turn on location
                 this.MyMapView.LocationDisplay.AutoPanMode = Esri.ArcGISRuntime.UI.LocationDisplayAutoPanMode.Recenter;
                 this.MyMapView.LocationDisplay.IsEnabled = true;
+
+                // Bind the location as it changes to the chat view model so that it is aware.
+                this.MyMapView.LocationDisplay.LocationChanged += (sender, e) =>
+                {
+                    this.ChatViewModel.CurrentLocation.Value = e.Position;
+                };
             });
 
             this.ViewModel.Initialize();
-            this.ChatViewModel.Initialize();
+            this.ChatViewModel.InitializeAsync();
         }
 
         /// <summary>
