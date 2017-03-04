@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
+    <ProjectGuid>{100D3E7A-E54F-4939-8DF6-A42BBFB49FA4}</ProjectGuid>
+    <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>VoiceNavigation</RootNamespace>
+    <AssemblyName>VoiceNavigation</AssemblyName>
+    <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
+    <DefineConstants>DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchDebug>true</MtouchDebug>
+    <MtouchFastDev>true</MtouchFastDev>
+    <MtouchUseSGen>true</MtouchUseSGen>
+    <MtouchUseRefCounting>true</MtouchUseRefCounting>
+    <IOSDebuggerPort>35262</IOSDebuggerPort>
+    <MtouchLink>None</MtouchLink>
+    <MtouchArch>x86_64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <MtouchTlsProvider>Default</MtouchTlsProvider>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhone\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchUseSGen>true</MtouchUseSGen>
+    <MtouchUseRefCounting>true</MtouchUseRefCounting>
+    <MtouchFloat32>true</MtouchFloat32>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchArch>ARMv7, ARM64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <MtouchTlsProvider>Default</MtouchTlsProvider>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchUseSGen>true</MtouchUseSGen>
+    <MtouchUseRefCounting>true</MtouchUseRefCounting>
+    <MtouchLink>None</MtouchLink>
+    <MtouchArch>x86_64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <MtouchTlsProvider>Default</MtouchTlsProvider>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhone\Debug</OutputPath>
+    <DefineConstants>DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <DeviceSpecificBuild>true</DeviceSpecificBuild>
+    <MtouchDebug>true</MtouchDebug>
+    <MtouchFastDev>true</MtouchFastDev>
+    <MtouchUseSGen>true</MtouchUseSGen>
+    <MtouchUseRefCounting>true</MtouchUseRefCounting>
+    <MtouchFloat32>true</MtouchFloat32>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchArch>ARMv7, ARM64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <MtouchTlsProvider>Default</MtouchTlsProvider>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Xamarin.iOS" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Esri.ArcGISRuntime">
+      <HintPath>..\packages\Esri.ArcGISRuntime.Xamarin.iOS.100.0.0\lib\Xamarin.iOS10\Esri.ArcGISRuntime.dll</HintPath>
+    </Reference>
+    <Reference Include="MaterialControls">
+      <HintPath>..\packages\MaterialControls.1.2.2\lib\Xamarin.iOS10\MaterialControls.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Cognitive.LUIS">
+      <HintPath>..\packages\Microsoft.Cognitive.LUIS.2.0.0\lib\portable45-net45+win8+wpa81\Microsoft.Cognitive.LUIS.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\ChatBubbleOutgoing.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\ChatBubbleIncoming.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\ChatBubbleIncoming.imageset\bubble_regular.png" />
+    <ImageAsset Include="Assets.xcassets\ChatBubbleIncoming.imageset\bubble_regular%402x.png" />
+    <ImageAsset Include="Assets.xcassets\ChatBubbleIncoming.imageset\bubble_regular%403x.png" />
+    <ImageAsset Include="Assets.xcassets\ChatBubbleOutgoing.imageset\bubble_regular.png" />
+    <ImageAsset Include="Assets.xcassets\ChatBubbleOutgoing.imageset\bubble_regular%402x.png" />
+    <ImageAsset Include="Assets.xcassets\ChatBubbleOutgoing.imageset\bubble_regular%403x.png" />
+    <ImageAsset Include="Assets.xcassets\Mic.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\Mic.imageset\ic_mic_white_48pt.png" />
+    <ImageAsset Include="Assets.xcassets\Mic.imageset\ic_mic_white_48pt_2x.png" />
+    <ImageAsset Include="Assets.xcassets\Mic.imageset\ic_mic_white_48pt_3x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+    <Folder Include="ChatBubbles\" />
+    <Folder Include="Assets.xcassets\ChatBubbleOutgoing.imageset\" />
+    <Folder Include="Assets.xcassets\ChatBubbleIncoming.imageset\" />
+    <Folder Include="ViewControllers\" />
+    <Folder Include="ViewModels\" />
+    <Folder Include="Assets.xcassets\Mic.imageset\" />
+    <Folder Include="Context\" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterfaceDefinition Include="LaunchScreen.storyboard" />
+    <InterfaceDefinition Include="Main.storyboard" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Info.plist" />
+    <None Include="Entitlements.plist" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Main.cs" />
+    <Compile Include="AppDelegate.cs" />
+    <Compile Include="ChatBubbles\BubbleCell.cs" />
+    <Compile Include="ChatBubbles\IncomingCell.cs" />
+    <Compile Include="ChatBubbles\OutgoingCell.cs" />
+    <Compile Include="ChatBubbles\ChatMessage.cs" />
+    <Compile Include="ViewControllers\ChatViewController.cs" />
+    <Compile Include="ViewControllers\ChatViewController.designer.cs">
+      <DependentUpon>ChatViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\ChatViewModel.cs" />
+    <Compile Include="ViewControllers\PrimaryMapViewController.cs" />
+    <Compile Include="ViewControllers\PrimaryMapViewController.designer.cs">
+      <DependentUpon>PrimaryMapViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\PrimaryMapViewModel.cs" />
+    <Compile Include="MapUtils.cs" />
+    <Compile Include="Context\Context.cs" />
+    <Compile Include="Context\Subject.cs" />
+    <Compile Include="ContextFactory.cs" />
+    <Compile Include="Context\LuisProcessing.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VoiceNavigationCore\VoiceNavigationCore.csproj">
+      <Project>{462BB0CB-6DEA-4086-A311-82F355E4F8F5}</Project>
+      <Name>VoiceNavigationCore</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
+  <Import Project="..\packages\Esri.ArcGISRuntime.Xamarin.iOS.100.0.0\build\Xamarin.iOS10\Esri.ArcGISRuntime.Xamarin.iOS.targets" Condition="Exists('..\packages\Esri.ArcGISRuntime.Xamarin.iOS.100.0.0\build\Xamarin.iOS10\Esri.ArcGISRuntime.Xamarin.iOS.targets')" />
+</Project>
